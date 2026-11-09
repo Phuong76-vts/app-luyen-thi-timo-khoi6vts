@@ -169,6 +169,18 @@ table{border-radius:14px;overflow:hidden}th{background:#f4f7fd}
 .credit{margin:18px 0 6px}.cr-in{display:flex;align-items:center;gap:14px;justify-content:center;background:rgba(255,255,255,.85);border:1px solid #fff;border-radius:22px;padding:14px 18px;box-shadow:0 10px 26px rgba(40,60,130,.09);text-align:left}
 .cr-ic{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;font-size:24px;background:linear-gradient(135deg,var(--a1),var(--a2));flex:none}
 .cr-k{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}.cr-n{font-size:18px;font-weight:800;color:var(--pri)}.cr-s{font-size:13.5px;color:var(--mut)}
+.coach{background:linear-gradient(135deg,#fff,var(--pri2));border:1px solid #fff;border-radius:26px;padding:18px 20px;margin-bottom:14px;box-shadow:0 14px 34px rgba(40,60,130,.12);animation:rise .45s both}
+.co-h{display:flex;gap:16px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+.co-k{font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--pri)}
+.co-t{font-size:17px;font-weight:700;margin-top:3px;line-height:1.4}
+.co-lv{min-width:200px}.co-lv b{display:block;margin-bottom:5px;color:var(--pri)}
+.co-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:12px}
+.co-gi{background:rgba(255,255,255,.85);border-radius:18px;padding:12px 14px}.co-gi .bar{margin:6px 0 4px}
+.co-n{font-size:28px;font-weight:800;color:var(--pri);line-height:1.1}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.bdg{display:flex;flex-direction:column;gap:2px;align-items:center;text-align:center;background:#f3f5fa;border-radius:18px;padding:12px 8px;filter:grayscale(1);opacity:.55}
+.bdg span{font-size:30px}.bdg b{font-size:14px}.bdg small{font-size:11.5px;color:var(--mut)}
+.bdg.on{filter:none;opacity:1;background:linear-gradient(135deg,var(--pri2),#fff);box-shadow:0 8px 20px rgba(40,60,130,.10)}
 @media print{body{background:#fff}.noprint{display:none!important}.card{border:0;padding:0;box-shadow:none}.wrap{max-width:none;padding:0}}
 </style>
 </head>
@@ -178,9 +190,8 @@ table{border-radius:14px;overflow:hidden}th{background:#f4f7fd}
  <h1>🏆 Luyện đề TIMO · Khối 6</h1><div class="sub">Olympic Toán học quốc tế TIMO · luyện đề, chấm điểm, xem lời giải</div><div class="sub" style="margin-top:6px;font-size:13px;opacity:.9">✍️ Tác giả: <b>Ngô Thị Phương</b> · GV THCS Võ Thị Sáu, An Biên, Hải Phòng</div>
  <div class="row" style="margin-top:10px;justify-content:space-between"><span class="mut" id="who"></span><button class="btn ghost" id="homeBtn">🏠 Trang chủ</button></div></header>
 <nav class="tabs noprint" id="nav" aria-label="Các mục"></nav>
-<div class="draft noprint">✅ <b>BẢN NHÁP — thầy cô duyệt trước khi dùng.</b> Toàn bộ câu hỏi do trợ lý soạn bám khung chương trình và cấu trúc TIMO khối 6 (không phải đề thi chính thức, không chép đề của đơn vị nào). Đề TIMO Fermat dùng theo sự đồng ý của đơn vị cho học sinh ôn luyện. Dữ liệu chỉ lưu trên máy của người dùng.</div>
 <div id="app"></div>
-<footer class="credit"><div class="cr-in"><span class="cr-ic">👩‍🏫</span><div><div class="cr-k">Tác giả app</div><div class="cr-n">Ngô Thị Phương</div><div class="cr-s">Giáo viên Trường THCS Võ Thị Sáu · phường An Biên · Hải Phòng</div></div></div></footer>
+<footer class="credit"><div class="cr-in"><span class="cr-ic">👩‍🏫</span><div><div class="cr-k">Tác giả app</div><div class="cr-n">Ngô Thị Phương</div><div class="cr-s">Giáo viên Trường THCS Võ Thị Sáu · phường An Biên · Hải Phòng</div><div class="cr-s" style="font-size:12.5px;margin-top:2px">Đề TIMO là tài liệu của FERMAT Education, dùng cho học sinh ôn luyện. Dữ liệu chỉ lưu trên máy của người dùng.</div></div></div></footer>
 </div>
 <script>
 /*DATA*/
@@ -452,7 +463,41 @@ function parseNum(s){s=String(s).trim().replace(/\s+/g,"").replace(/,/g,".").rep
   const n=Number(s);return isFinite(n)?n:null}
 function check(q,v){ if(v==null||v==="")return false;
   if(q.o)return v===q.a; const x=parseNum(v),y=parseNum(q.a);return x!==null&&y!==null&&Math.abs(x-y)<1e-9}
-function record(q,ok){const r=DB.res[q.id]||{n:0,ok:0,last:null};r.n++;if(ok)r.ok++;r.last=ok;DB.res[q.id]=r;save()}
+const todayS=()=>{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const addDays=(s,n)=>{const d=new Date(s+"T00:00:00Z");d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)};
+const BOXD=[0,1,2,4,7,14];
+function record(q,ok){const r=DB.res[q.id]||{n:0,ok:0,last:null};r.n++;if(ok)r.ok++;r.last=ok;
+  r.box=ok?Math.min(5,(r.box||0)+1):0;r.due=addDays(todayS(),BOXD[r.box]);DB.res[q.id]=r;
+  DB.days=DB.days||{};const t=todayS(),before=DB.days[t]||0;DB.days[t]=before+1;DB.xp=(DB.xp||0)+(ok?10:3);
+  if(before+1===GOAL)setTimeout(confetti,300);save()}
+const GOAL=10;
+const LV=[[0,"Mầm toán 🌱"],[50,"Tập sự ✏️"],[150,"Chăm chỉ 📚"],[300,"Nhà toán học nhí 🧮"],[500,"Thám tử số 🔎"],[800,"Pháp sư logic 🪄"],[1200,"Cao thủ 🥋"],[1800,"Kiện tướng 🏆"],[2500,"Quán quân 👑"],[3500,"Huyền thoại TIMO 🌟"]];
+function levelInfo(){const x=DB.xp||0;let i=0;while(i+1<LV.length&&x>=LV[i+1][0])i++;const lo=LV[i][0],hi=LV[i+1]?LV[i+1][0]:null;return{i,name:LV[i][1],x,lo,hi,pc:hi?Math.round((x-lo)*100/(hi-lo)):100}}
+function streakN(){const d=DB.days||{};let t=todayS(),n=0;if(!d[t])t=addDays(t,-1);while(d[t]){n++;t=addDays(t,-1)}return n}
+function topicStat(){const o={};for(const k of Object.keys(TOPICS)){let n=0,ok=0,seen=0;const qs=bank().filter(q=>q.t===k);qs.forEach(q=>{const r=DB.res[q.id];if(r){seen++;n+=r.n;ok+=r.ok}});o[k]={n,ok,seen,tot:qs.length,acc:n?ok/n:null}}return o}
+function weakest(){const s=topicStat();let best=null,bs=9;for(const k in s){const x=s[k];const sc=x.n>=3?x.acc:(x.n===0?0.55:0.6);if(sc<bs){bs=sc;best=k}}return best}
+function dueList(){const t=todayS();return bank().filter(q=>{const r=DB.res[q.id];return r&&r.due&&r.due<=t})}
+function smartPick(cnt){cnt=cnt||8;const s=topicStat(),t=todayS();
+  const sc=bank().map(q=>{const r=DB.res[q.id],ts=s[q.t];const acc=ts.acc==null?0.5:ts.acc;
+    const tl=acc>=0.8?3:acc<0.5?1:2;let v=(1-acc)*2-Math.abs(q.l-tl)*0.7+Math.random()*0.6;
+    if(!r)v+=2;else if(r.last===false)v+=3;else if(r.due&&r.due<=t)v+=1.5;else v-=1.5;return{q,v}}).sort((x,y)=>y.v-x.v);
+  const out=[],cn={};for(const{q}of sc){if((cn[q.t]||0)>=Math.ceil(cnt/2.5))continue;out.push(q);cn[q.t]=(cn[q.t]||0)+1;if(out.length>=cnt)break}
+  return out}
+function smartNextHTML(L){const bad={};L.forEach((q,k)=>{if(!check(q,R.ans[k]))bad[q.t]=(bad[q.t]||0)+1});
+  const ks=Object.keys(bad).sort((x,y)=>bad[y]-bad[x]);const lv=levelInfo(),dn=(DB.days||{})[todayS()]||0;
+  const msg=ks.length?`Em còn sai nhiều nhất ở <b>${TOPICS[ks[0]]}</b> (${bad[ks[0]]} câu). Đọc lại kiến thức rồi luyện tiếp để chắc hơn nhé.`:`Em làm đúng hết! Thử luyện thông minh để gặp câu khó hơn nhé.`;
+  return `<div class="coach" style="margin:12px 0"><div class="co-k">🧠 Gợi ý tiếp theo</div><div class="co-t">${msg}</div>
+  <small class="mut">Cấp hiện tại: ${lv.name} · ${lv.x} XP · Hôm nay ${dn}/${GOAL} câu</small>
+  <div class="row" style="margin-top:10px">${ks.length?`<button class="btn sec" id="snTh" data-k="${ks[0]}">📖 Ôn kiến thức ${TOPICS[ks[0]]}</button>`:""}<button class="btn" id="snGo">✨ Luyện thông minh</button></div></div>`}
+function smartStart(){const l=smartPick(8);if(l.length)start(l,"prac")}
+function dueStart(){const l=dueList();if(l.length)start(shuffle(l).slice(0,10),"prac")}
+function badges(){const r=Object.values(DB.res),n=r.reduce((s,x)=>s+x.n,0),ok=r.reduce((s,x)=>s+x.ok,0),st=topicStat(),sk=streakN(),fm=Object.keys(DB.fm||{}).length;
+  const fixed=r.filter(x=>x.n>x.ok&&x.last===true).length;
+  return[["🌱","Khởi động","Làm 10 câu",n>=10],["🔥","Chuỗi 3 ngày","Học 3 ngày liên tiếp",sk>=3],["⚡","Chuỗi 7 ngày","Học 7 ngày liên tiếp",sk>=7],
+  ["🎯","Xạ thủ","Đúng từ 80% với ít nhất 30 lượt làm",n>=30&&ok/n>=.8],["🧩","Đủ 5 chuyên đề","Làm ít nhất 3 câu mỗi chuyên đề",Object.values(st).every(x=>x.seen>=3)],
+  ["🛠️","Thợ sửa lỗi","Sửa đúng 5 câu từng làm sai",fixed>=5],["⏱️","Chiến binh phòng thi","Hoàn thành 1 lần thi thử",DB.exams.length>=1],
+  ["📘","Làm đề Fermat","Nộp 1 đề Fermat",fm>=1],["🏅","Chăm đề Fermat","Nộp 5 đề Fermat",fm>=5],["🌟","Cấp 5 trở lên","Đạt cấp Thám tử số",levelInfo().i>=4]]}
+
 
 const MN={6:["Cú Toán","🦉"],7:["Rô-bốt Toán","🤖"],8:["Cáo Toán","🦊"],9:["Phi hành gia Toán","🚀"]};
 const DECO={6:["🎈","⭐","🍀","🌈"],7:["💡","⚙️","🧩","✨"],8:["🔬","📐","⚡","🎯"],9:["🚀","🪐","🌟","🧠"]};
@@ -509,6 +554,19 @@ $("#nav").innerHTML=NAV.map(([k,t])=>`<button data-go="${k}">${t}</button>`).joi
 document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>go(b.dataset.go));
 $("#homeBtn").onclick=()=>go("home");
 
+/* ---------- Cố vấn học tập ---------- */
+function coachHTML(done,wrong){
+  const lv=levelInfo(),dn=(DB.days||{})[todayS()]||0,gp=Math.min(100,Math.round(dn*100/GOAL)),sk=streakN(),w=weakest(),ts=topicStat()[w],due=dueList().length;
+  const why=!done?`Em hãy khởi động với <b>${TOPICS[w]}</b> nhé.`:ts.n>=3?`Chủ đề em cần củng cố nhất: <b>${TOPICS[w]}</b> (đúng ${Math.round(ts.acc*100)}%).`:`Em chưa luyện nhiều <b>${TOPICS[w]}</b>, mình thử nhé.`;
+  return `<div class="coach"><div class="co-h"><div><div class="co-k">🧠 Cố vấn học tập</div><div class="co-t">${why}</div></div>
+   <div class="co-lv"><b>${lv.name}</b><div class="bar"><i style="width:${lv.pc}%"></i></div><small>${lv.x} XP${lv.hi?" · còn "+(lv.hi-lv.x)+" XP lên cấp":" · cấp cao nhất"}</small></div></div>
+   <div class="co-g"><div class="co-gi"><b>🎯 Mục tiêu hôm nay</b><div class="bar"><i style="width:${gp}%"></i></div><small>${dn}/${GOAL} câu${dn>=GOAL?" · Hoàn thành! 🎉":""}</small></div>
+   <div class="co-gi"><b>🔥 Chuỗi ngày học</b><div class="co-n">${sk}<small> ngày</small></div><small>${sk?"Giữ vững nhé!":"Làm 1 câu để bắt đầu chuỗi"}</small></div></div>
+   <div class="row" style="margin-top:12px"><button class="btn" id="smartGo">✨ Luyện thông minh (8 câu)</button>
+   <button class="btn sec" id="coachTh" data-k="${w}">📖 Xem kiến thức ${TOPICS[w]}</button>
+   ${due?`<button class="btn sec" id="dueGo">🧠 Ôn đúng hạn (${due} câu)</button>`:""}</div>
+   <p class="mut" style="margin:8px 0 0;font-size:13px">Luyện thông minh chọn câu theo điểm yếu của em, trộn câu mới, câu từng sai và câu đến hạn ôn lại.</p></div>`}
+
 /* ---------- Trang chủ ---------- */
 function home(){
   stopTimer();R=null;setWho();setTheme();setNav("home");
@@ -518,6 +576,7 @@ function home(){
   ${DB.me?"":`<div class="card"><h2>Bắt đầu</h2><p class="mut">Nhập <b>mã</b> của em (ví dụ HS01). <b>Không nhập họ tên thật</b>, số điện thoại hay ngày sinh.</p>
    <div class="row"><input type="text" id="me" maxlength="8" placeholder="HS01" autocomplete="off"><button class="btn" id="saveMe">Lưu mã</button></div><div id="meErr" class="err"></div></div>`}
   ${true?`<div class="mc">${mascot("happy",92)}<div class="bubble">${done?`Chào em! Em đã làm <b>${done}</b> câu rồi, giỏi quá! Hôm nay mình làm tiếp nhé?`:`Chào em! Mình là ${MN[curG()][0]} ${MN[curG()][1]}. Cùng luyện đề TIMO khối ${curG()} và nhận thật nhiều ⭐ nào!`}</div></div>`:""}
+  ${coachHTML(done,wrong)}
   <div class="stats">
    <div class="stat"><div class="ic">✏️</div><div><div class="v">${done}</div><div class="k">Câu đã làm</div></div></div>
    <div class="stat"><div class="ring" style="--p:${acc}"><i>${acc}%</i></div><div><div class="k" style="margin:0">Tỉ lệ đúng</div></div></div>
@@ -536,6 +595,7 @@ function home(){
   <div class="card" style="margin-top:12px"><h3>Ngân hàng câu riêng · khối ${curG()}</h3>
    <p class="mut">${bank().length} câu · ${Object.keys(TOPICS).length} chuyên đề. ${Object.entries(LEVELS).map(([k,v])=>v+": "+bank().filter(q=>q.l==k).length).join(" · ")}.</p></div>`;
   document.querySelectorAll("#app .tile b").forEach(b=>{const m=b.textContent.match(/^(\p{Extended_Pictographic}\uFE0F?(?:\u200D\p{Extended_Pictographic}\uFE0F?)*)\s*(.*)$/u);if(m){const i=document.createElement("i");i.className="ti";i.textContent=m[1];b.textContent=m[2];b.parentNode.insertBefore(i,b)}});
+  const sg=$("#smartGo");if(sg)sg.onclick=smartStart;const dg=$("#dueGo");if(dg)dg.onclick=dueStart;const ct=$("#coachTh");if(ct)ct.onclick=()=>{setNav("theory");theoryView(ct.dataset.k)};
   document.querySelectorAll("#app [data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
   document.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{DB.grade=+b.dataset.g;save();home()});
   const sm=$("#saveMe");if(sm)sm.onclick=()=>{const v=$("#me").value.trim().toUpperCase();
@@ -566,7 +626,7 @@ function theoryView(k){
   <div class="chips" id="thc">${Object.entries(TOPICS).map(([k2,v])=>`<button class="chip ${k2===THK?"on":""}" data-k="${k2}">${v}</button>`).join("")}</div>
   ${thCard(g,THK)}
   <div class="row"><button class="btn" id="thGo">✏️ Luyện chủ đề này (${bank().filter(q=>q.t===THK).length} câu)</button><button class="btn ghost" onclick="home()">🏠 Trang chủ</button></div>
-  <p class="mut">✅ BẢN NHÁP — thầy/cô duyệt trước khi dùng. Tóm tắt kiến thức tự biên soạn theo chương trình, không sao chép từ sách.</p></div>`;
+  <p class="mut">Phần tóm tắt kiến thức được biên soạn theo chương trình, không sao chép từ sách.</p></div>`;
   document.querySelectorAll("#thc .chip").forEach(c=>c.onclick=()=>theoryView(c.dataset.k));
   $("#thGo").onclick=()=>start(shuffle(bank().filter(q=>q.t===THK)).slice(0,10),"prac");
 }
@@ -631,7 +691,7 @@ function showQ(){
   else body=`<div class="row"><input type="text" id="ansIn" value="${esc(R.ans[k]??"")}" placeholder="Nhập đáp án (số hoặc phân số a/b)" ${locked?"disabled":""} style="width:min(320px,100%)" autocomplete="off"></div>`;
   let fb="";
   if(locked){const ok=check(q,R.ans[k]);const right=q.o?`${"ABCD"[q.a]}. ${q.o[q.a]}`:q.a;
-    fb=(true?`<div class="mc" style="margin:12px 0 0">${mascot(ok?"cheer":"sad",70)}<div class="bubble">${ok?pick(PRAISE):pick(TRYAGAIN)}</div></div>`:"")+`<div class="fb ${ok?"ok":"no"}">${ok?"✅ Chính xác!":"❌ Chưa đúng. Đáp án: <b>"+fmt(right)+"</b>"}</div><div class="exp"><b>Lời giải:</b> ${fmt(q.e)}</div><div class="err">⚠️ Lỗi hay gặp: ${fmt(q.x)}</div>`}
+    fb=(true?`<div class="mc" style="margin:12px 0 0">${mascot(ok?"cheer":"sad",70)}<div class="bubble">${ok?pick(PRAISE):pick(TRYAGAIN)}</div></div>`:"")+`<div class="fb ${ok?"ok":"no"}">${ok?"✅ Chính xác!":"❌ Chưa đúng. Đáp án: <b>"+fmt(right)+"</b>"}</div><div class="exp"><b>Lời giải:</b> ${fmt(q.e)}</div><div class="err">⚠️ Lỗi hay gặp: ${fmt(q.x)}</div>${ok?"":`<details class="exb" style="margin-top:10px"><summary>📖 Ôn lại kiến thức: ${TOPICS[q.t]}</summary>${thCard(curG(),q.t)}</details>`}`}
   const hint=prac&&!locked?`<details style="margin-top:10px"><summary class="mut" style="cursor:pointer">💡 Xem gợi ý</summary><div class="exp">${fmt(q.h)}</div></details>`:"";
   $("#app").innerHTML=`<div class="card">
    <div class="row" style="justify-content:space-between"><div><span class="tag t-${q.t}">${TOPICS[q.t]}</span><span class="tag">${LEVELS[q.l]}</span></div>
@@ -668,7 +728,9 @@ function finish(){
     <div class="mut">Em trả lời: ${fmt(mine)} · Đáp án: <b>${fmt(right)}</b></div>
     ${ok?"":`<div class="exp"><b>Lời giải:</b> ${fmt(q.e)}</div><div class="err">⚠️ Lỗi hay gặp: ${fmt(q.x)}</div>`}</div>`}).join("");
   $("#app").innerHTML=`<div class="card"><h2>Kết quả</h2>${true?cheerBlock(okc*100/L.length):""}<div class="big">${okc}/${L.length}</div><p>Đúng ${okc} câu (${Math.round(okc*100/L.length)}%).</p>${extra}
+   ${smartNextHTML(L)}
    <div class="row"><button class="btn" onclick="home()">Về trang chủ</button><button class="btn sec" onclick="wrongStart()">Ôn lại câu sai</button></div></div>${rows}`;
+  const s1=$("#snTh");if(s1)s1.onclick=()=>{setNav("theory");theoryView(s1.dataset.k)};const s2=$("#snGo");if(s2)s2.onclick=smartStart;
 }
 
 /* ---------- Tiến độ ---------- */
@@ -677,13 +739,19 @@ function stats(){
     qs.forEach(q=>{const r=DB.res[q.id];if(r){d++;n+=r.n;ok+=r.ok}});const pc=n?Math.round(ok*100/n):0;
     return `<tr><td>${v}</td><td>${d}/${qs.length}</td><td style="width:38%"><div class="bar"><i style="width:${pc}%"></i></div></td><td>${n?pc+"%":"–"}</td></tr>`}).join("");
   const ex=DB.exams.slice(-8).reverse().map(e=>`<tr><td>${e.d}</td><td>${e.ok}/${e.n}</td><td>${e.got}/${e.tot}</td></tr>`).join("");
-  $("#app").innerHTML=`<div class="card"><h2>📊 Tiến độ ${esc(DB.me||"")}</h2><table><tr><th>Chuyên đề</th><th>Đã làm</th><th>Tỉ lệ đúng</th><th></th></tr>${rows}</table>
+  const lv=levelInfo(),bd=badges(),got=bd.filter(b=>b[3]).length,w=weakest(),due=dueList().length;
+  $("#app").innerHTML=`<div class="card"><h2>🏆 Thành tích ${esc(DB.me||"")}</h2>
+  <div class="co-h"><div><div class="co-t">${lv.name}</div><small class="mut">${lv.x} XP · chuỗi ${streakN()} ngày · ${due} câu đến hạn ôn lại</small></div><div class="co-lv"><div class="bar"><i style="width:${lv.pc}%"></i></div><small>${lv.hi?"Còn "+(lv.hi-lv.x)+" XP lên cấp":"Cấp cao nhất"}</small></div></div>
+  <h3>Huy hiệu (${got}/${bd.length})</h3><div class="badges">${bd.map(b=>`<div class="bdg ${b[3]?"on":""}" title="${b[2]}"><span>${b[0]}</span><b>${b[1]}</b><small>${b[2]}</small></div>`).join("")}</div>
+  <div class="row" style="margin-top:12px"><button class="btn" id="stSmart">✨ Luyện thông minh</button><button class="btn sec" id="stTh" data-k="${w}">📖 Ôn kiến thức ${TOPICS[w]}</button></div></div>
+  <div class="card"><h2>📊 Tiến độ ${esc(DB.me||"")}</h2><table><tr><th>Chuyên đề</th><th>Đã làm</th><th>Tỉ lệ đúng</th><th></th></tr>${rows}</table>
   <p class="mut">Tỉ lệ đúng tính trên mọi lần làm. Chủ đề nào dưới 60% nên luyện thêm.</p></div>
   <div class="card"><h3>Đề Fermat đã làm</h3>${fmStats()}<div class="row" style="margin-top:10px"><button class="btn sec" id="exp">📤 Gửi kết quả cho thầy cô</button></div></div>
   <div class="card"><h3>Các lần thi thử gần đây (câu riêng)</h3>${ex?`<table><tr><th>Ngày</th><th>Số câu đúng</th><th>Điểm</th></tr>${ex}</table>`:`<p class="mut">Chưa có lần thi thử nào.</p>`}</div>
   <div class="card"><button class="btn ghost" id="rst">Xóa toàn bộ kết quả trên máy này</button></div>`;
+  $("#stSmart").onclick=smartStart;$("#stTh").onclick=()=>{setNav("theory");theoryView($("#stTh").dataset.k)};
   $("#exp").onclick=exportView;const wg=$("#weakGo");if(wg)wg.onclick=()=>start(shuffle(bank().filter(q=>q.t===wg.dataset.k)).slice(0,10),"prac");
-  $("#rst").onclick=()=>{if(confirm("Xóa toàn bộ kết quả luyện tập đã lưu trên máy này?")){DB.res={};DB.exams=[];DB.fm={};DB.draft={};save();stats()}};
+  $("#rst").onclick=()=>{if(confirm("Xóa toàn bộ kết quả luyện tập đã lưu trên máy này?")){DB.res={};DB.exams=[];DB.fm={};DB.draft={};DB.days={};DB.xp=0;save();stats()}};
 }
 
 function teacherHome(){
